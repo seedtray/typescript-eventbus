@@ -15,30 +15,9 @@ gulp.task('lint', function() {
         .pipe(tslint.report('verbose'))
 });
 
-var webpack = require("webpack");
-gulp.task("bundle-tests", function(callback) {
-    webpack({
-      entry: './src/eventbus_test.ts',
-      output: {
-        filename: 'built/local/test-bundle.js'
-      },
-      resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.ts', '.js']
-      },
-      module: {
-        loaders: [
-          { test: /\.ts$/, loader: 'ts-loader' }
-        ]
-      }
-    }, function(err, stats) {
-        if(err) throw err;
-        callback();
-    });
-});
-
 var gulp = require('gulp');
 var Server = require('karma').Server;
-gulp.task('test', ['bundle-tests'], function (done) {
+gulp.task('test', ['compile-sources'], function (done) {
   new Server({
     configFile: __dirname + '/karma.conf.js',
     singleRun: true

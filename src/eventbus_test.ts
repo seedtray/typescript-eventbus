@@ -1,6 +1,6 @@
 /// <reference path="../typings/jasmine/jasmine.d.ts"/>
 
-import events = require("./eventbus");
+import * as events from "./eventbus";
 
 describe("Test event bus", function () {
 
