@@ -15,11 +15,22 @@ gulp.task('lint', function() {
         .pipe(tslint.report('verbose'))
 });
 
-var gulp = require('gulp');
 var Server = require('karma').Server;
 gulp.task('test', ['compile-sources'], function (done) {
   new Server({
     configFile: __dirname + '/karma.conf.js',
     singleRun: true
   }, done).start();
+});
+
+var typedoc = require('gulp-typedoc');
+gulp.task('docs', function() {
+    return gulp
+        .src(['src/**/*.ts', '!src/**/*_test.ts'])
+        .pipe(typedoc({
+            module: 'commonjs',
+            out: 'docs/',
+            name: 'A simple event bus.'
+        }))
+    ;
 });
