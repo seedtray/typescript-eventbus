@@ -1,17 +1,18 @@
 /// <reference path="../typings/jasmine/jasmine.d.ts"/>
-/// <reference path="../src/eventbus.ts"/>
+
+import events = require("./eventbus");
 
 describe("Test event bus", function () {
 
-  class TestEvent implements Events.Event {
+  class TestEvent implements events.Event {
     name: string = "TestEvent";
     constructor (public data?: string) {}
   }
 
-  var eventBus : Events.EventBus;
+  var eventBus : events.EventBus;
 
   beforeEach(function() {
-    eventBus = new Events.EventBus();
+    eventBus = new events.EventBus();
   });
 
   it("calls event handlers", function () {

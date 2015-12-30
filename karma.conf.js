@@ -13,7 +13,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'built/local/testSpecs.js'
+      'built/local/test-bundle.js'
     ],
 
     // list of files to exclude
