@@ -2,9 +2,7 @@ export interface Event {
   name: string;
 }
 
-export interface EventHandler<T extends Event> {
-  onEvent(e : T) : void;
-}
+export type EventHandler<T extends Event> = (event : T) => void;
 
 export interface HandlerRegistration {
   unregister() : void;
@@ -42,7 +40,7 @@ export class EventBus {
   emit(event: Event) {
     var handlers = this.handlers[event.name] || [];
     handlers.forEach(h => {
-      h.onEvent(event);
+      h(event);
     });
   }
 }

@@ -17,9 +17,7 @@ describe("Test event bus", function () {
 
   it("calls event handlers", function () {
     var handler = jasmine.createSpy("handler");
-    var reg = eventBus.listen(new TestEvent(), {
-      onEvent: handler,
-    });
+    var reg = eventBus.listen(new TestEvent(), handler);
 
     var e = new TestEvent("Hello World")
     eventBus.emit(e);
@@ -30,9 +28,7 @@ describe("Test event bus", function () {
 
   it("doesn't call unregistered handlers", function () {
     var handler = jasmine.createSpy("handler");
-    var reg = eventBus.listen(new TestEvent(), {
-      onEvent: handler,
-    });
+    var reg = eventBus.listen(new TestEvent(), handler);
 
     reg.unregister();
     var e = new TestEvent("Hello World")
@@ -42,12 +38,10 @@ describe("Test event bus", function () {
 
   it("only calls once to one off handlers", function () {
     var handler = jasmine.createSpy("event handler");
-    var reg = eventBus.listen(new TestEvent(), {
-      onEvent: (e) => {
+    var reg = eventBus.listen(new TestEvent(), (e) => {
         reg.unregister();
         handler(e);
-      },
-    });
+      });
 
     var e = new TestEvent("Hello World")
     eventBus.emit(e);
@@ -58,9 +52,7 @@ describe("Test event bus", function () {
   });
 
   it("throws an error if handler is unregistered", function () {
-    var reg = eventBus.listen(new TestEvent(), {
-      onEvent: (e) => {},
-    });
+    var reg = eventBus.listen(new TestEvent(), (e) => {});
 
     reg.unregister();
 
@@ -70,6 +62,24 @@ describe("Test event bus", function () {
     } catch (e) {
       expect(e.message).toBe("Event handler not registered.");
     }
+  });
+
+  it("do not call handlers registered during event handling", function () {
+    var handler1 = jasmine.createSpy("event handler 1");
+    var handler2 = jasmine.createSpy("event handler 2");
+
+    var reg = eventBus.listen(new TestEvent(), (e) => {
+        handler1(e);
+        eventBus.listen(new TestEvent(), handler2);
+      });
+
+    var e = new TestEvent("Hello World")
+    eventBus.emit(e);
+    eventBus.emit(e);
+
+    expect(handler1.calls.count()).toBe(2);
+    expect(handler1).toHaveBeenCalledWith(e);
+    expect(handler2.calls.count()).toBe(1);
   });
 
 });
