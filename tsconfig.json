@@ -1,6 +1,8 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "noImplicitAny": true
+        "noImplicitAny": true,
+        "target": "es3",
+        "outDir": "built/local"
     }
 }

@@ -17,7 +17,7 @@ describe("Test event bus", function() {
 
     it("calls event handlers", function() {
         var handler = jasmine.createSpy("handler");
-        var reg = eventBus.listen(new TestEvent(), handler);
+        var reg = eventBus.on(new TestEvent(), handler);
 
         var e = new TestEvent("Hello World")
         eventBus.emit(e);
@@ -28,7 +28,7 @@ describe("Test event bus", function() {
 
     it("doesn't call unregistered handlers", function() {
         var handler = jasmine.createSpy("handler");
-        var reg = eventBus.listen(new TestEvent(), handler);
+        var reg = eventBus.on(new TestEvent(), handler);
 
         reg.unregister();
         var e = new TestEvent("Hello World")
@@ -38,7 +38,7 @@ describe("Test event bus", function() {
 
     it("only calls once to one off handlers", function() {
         var handler = jasmine.createSpy("event handler");
-        var reg = eventBus.listen(new TestEvent(), (e) => {
+        var reg = eventBus.on(new TestEvent(), (e) => {
             reg.unregister();
             handler(e);
         });
@@ -52,7 +52,7 @@ describe("Test event bus", function() {
     });
 
     it("throws an error if handler is unregistered", function() {
-        var reg = eventBus.listen(new TestEvent(), (e) => { });
+        var reg = eventBus.on(new TestEvent(), (e) => { });
 
         reg.unregister();
 
@@ -68,9 +68,9 @@ describe("Test event bus", function() {
         var handler1 = jasmine.createSpy("event handler 1");
         var handler2 = jasmine.createSpy("event handler 2");
 
-        var reg = eventBus.listen(new TestEvent(), (e) => {
+        var reg = eventBus.on(new TestEvent(), (e) => {
             handler1(e);
-            eventBus.listen(new TestEvent(), handler2);
+            eventBus.on(new TestEvent(), handler2);
         });
 
         var e = new TestEvent("Hello World")

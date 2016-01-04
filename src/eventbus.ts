@@ -1,3 +1,5 @@
+/// <reference path="../typings/es6-collections/es6-collections.d.ts"/>
+
 /**
  * An Event Bus event.
  *
@@ -36,32 +38,31 @@ export interface HandlerRegistration {
  */
 export class EventBus {
 
-    private handlers: { [key: string]: EventHandler<Event>[] } = {};
+    private handlers = new Map<string, EventHandler<Event>[]>();
 
     /**
      * Adds an event handler to receive events of a given type.
      * Returns a handler registration used to deregister.
      */
-    listen<T extends Event>(event: T, handler: EventHandler<T>): HandlerRegistration {
+    on<T extends Event>(event: T, handler: EventHandler<T>): HandlerRegistration {
 
-        var h = this.handlers[event.name];
-
+        var h = this.handlers.get(event.name);
         if (h == null) {
             h = [];
-            this.handlers[event.name] = h;
+            this.handlers.set(event.name, h);
         }
 
         h.push(handler);
         return {
             unregister: () => {
-                var h = this.handlers[event.name] || [];
+                var h = this.handlers.get(event.name) || [];
                 var index = h.indexOf(handler);
                 if (index == -1) {
                     throw new Error("Event handler not registered.");
                 }
                 h.splice(index, 1);
                 if (h.length == 0) {
-                    delete this.handlers[event.name];
+                    this.handlers.delete(event.name);
                 }
             }
         };
@@ -71,7 +72,7 @@ export class EventBus {
      * Fires a given event to all handlers listening to it.
      */
     emit(event: Event) {
-        var handlers = this.handlers[event.name] || [];
+        var handlers = this.handlers.get(event.name) || [];
         handlers.forEach(h => {
             h(event);
         });
